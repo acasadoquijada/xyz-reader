@@ -61,6 +61,11 @@ public class ArticleDetailFragment extends Fragment implements
     private boolean mIsCard = false;
     private int mStatusBarFullOpacityBottom;
 
+    // Added for the fab button
+
+    private String title;
+    private String author;
+
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss");
     // Use default locale format
     private SimpleDateFormat outputFormat = new SimpleDateFormat();
@@ -140,14 +145,13 @@ public class ArticleDetailFragment extends Fragment implements
 
         mStatusBarColorDrawable = new ColorDrawable(0);
 
-        mRootView.findViewById(R.id.share_fab).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(Intent.createChooser(ShareCompat.IntentBuilder.from(getActivity())
-                        .setType("text/plain")
-                        .setText("Some sample text")
-                        .getIntent(), getString(R.string.action_share)));
-            }
+        mRootView.findViewById(R.id.share_fab).setOnClickListener(view -> {
+
+            startActivity(Intent.createChooser(ShareCompat.IntentBuilder.from(getActivity())
+                    .setType("text/plain")
+                    .setText("Do you want to read " + title + " from " + author + "?\n\n" +
+                            "Checkout the xyz reader app in Google Play!!")
+                    .getIntent(), getString(R.string.action_share)));
         });
 
         bindViews();
@@ -213,6 +217,8 @@ public class ArticleDetailFragment extends Fragment implements
             mRootView.setVisibility(View.VISIBLE);
             mRootView.animate().alpha(1);
             titleView.setText(mCursor.getString(ArticleLoader.Query.TITLE));
+            title = mCursor.getString(ArticleLoader.Query.TITLE);
+            author = mCursor.getString(ArticleLoader.Query.AUTHOR);
             Date publishedDate = parsePublishedDate();
             if (!publishedDate.before(START_OF_EPOCH.getTime())) {
                 bylineView.setText(Html.fromHtml(
