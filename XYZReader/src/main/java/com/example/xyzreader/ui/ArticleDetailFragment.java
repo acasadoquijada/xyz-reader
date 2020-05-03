@@ -8,7 +8,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.graphics.Typeface;
+
 import android.graphics.drawable.ColorDrawable;
 
 import java.text.ParseException;
@@ -22,10 +22,13 @@ import androidx.palette.graphics.Palette;
 import android.text.Html;
 import android.text.format.DateUtils;
 import android.text.method.LinkMovementMethod;
+import android.transition.Slide;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -62,7 +65,6 @@ public class ArticleDetailFragment extends Fragment implements
     private int mStatusBarFullOpacityBottom;
 
     // Added for the fab button
-
     private String title;
     private String author;
 
@@ -209,6 +211,14 @@ public class ArticleDetailFragment extends Fragment implements
         bylineView.setMovementMethod(new LinkMovementMethod());
         TextView bodyView = (TextView) mRootView.findViewById(R.id.article_body);
 
+        Slide slide = new Slide(Gravity.BOTTOM);
+        slide.addTarget(bodyView);
+        slide.setInterpolator(
+                AnimationUtils.loadInterpolator(getActivity(),android.R.interpolator.linear_out_slow_in));
+
+        slide.setDuration(300);
+        getActivity().getWindow().setEnterTransition(slide);
+
      //   bodyView.setTypeface(Typeface.createFromAsset(getResources().getAssets(), "Rosario-Regular.ttf"));
 
         if (mCursor != null) {
@@ -237,10 +247,8 @@ public class ArticleDetailFragment extends Fragment implements
                                 + "</font>"));
 
             }
-            // Changed perform to improve application performance.
-            // See "App Is Laggy and Choppy, and often throws ANR how may I handle this issue"
-            // question in the Make Your App Material chat for more information
-            bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).substring(0,1000).replaceAll("(\r\n|\n)", "<br />")));
+
+            bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).replaceAll("(\r\n|\n)", "<br />")));
 
             ImageLoaderHelper.getInstance(getActivity()).getImageLoader()
                     .get(mCursor.getString(ArticleLoader.Query.PHOTO_URL), new ImageLoader.ImageListener() {
