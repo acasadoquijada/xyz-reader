@@ -19,7 +19,6 @@
                 android:layout_height="wrap_content"
                 android:background="@color/photo_placeholder">
                 <!-- match parent in tablet, wrap in phone-->
-                <!--suppress AndroidLintContentDescription -->
                 <ImageView
                     android:id="@+id/photo"
                     android:transitionName="name"
@@ -97,7 +96,6 @@
         app:elevation="@dimen/fab_elevation"
         android:layout_gravity="bottom|end"
         app:pressedTranslationZ="@dimen/fab_press_translation_z"
-        android:stateListAnimator="@anim/fab_state_list_anim"
         android:background="@color/theme_accent"
 
         android:layout_marginEnd="@dimen/fab_margin"
